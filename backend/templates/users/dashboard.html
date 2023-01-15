@@ -1,0 +1,202 @@
+{% extends 'base/base.html' %}
+{% load static widget_tweaks %}
+
+<!-- ================================
+    START SEO BLOCKS
+================================= -->
+{% block title %}
+    AGI - {{page_name}}
+{% endblock %}
+
+{% block keywords %}
+{% endblock %}
+
+{% block description %}
+{% endblock %}
+
+{% block schema %}
+{% endblock %}
+<!-- ================================
+    END SEO BLOCKS AREA
+================================= -->
+
+<!-- ================================
+    START HEADER SECTION
+================================= -->
+{% block extend_header %}{% endblock %}
+<!-- ================================
+    END HEADER SECTION
+================================= -->
+
+<!-- ================================
+    START MODAL SECTION
+================================= -->
+{% block modal %}{% endblock %}
+<!-- ================================
+    END MODAL SECTION
+================================= -->
+
+<!-- ================================
+    START FOOTER SECTION
+================================= -->
+{% block extend_footer %}
+<script>
+	//easy work around bootstrap date field rendering
+	//Django datefield is YY-mm-dd H:M:S
+	//Field requires YY-mm-dd
+	window.onload = function() {
+		var dob_el = $('#id_dob')
+		var dob = dob_el.attr("value")
+		dob_el.attr("value", dob.substring(0,10))
+	  };
+</script>
+
+{% endblock %}
+<!-- ================================
+    END FOOTER SECTION
+================================= -->
+
+<!-- ================================
+    START CONTENT SECTION
+================================= -->
+{% block content %}
+
+{% include 'base/partials/breadcrumb.html' %}
+<div class="row">
+	<div class="col-lg-12">
+		<div class="profile card card-body px-3 pt-3 pb-0">
+			<div class="profile-head">
+				<div class="photo-content">
+					<div class="cover-photo rounded"></div>
+				</div>
+				<div class="profile-info">
+					<div class="profile-photo">
+						<a class="test-popup-link" href="javascript:void(0)' %}">
+							<img src="{{request.user.avatar.url}}" class="img-fluid rounded-circle" alt="">
+						</a>
+					</div>
+					<div class="profile-details">
+						<div class="profile-name px-3 pt-2">
+							<h4 class="text-primary mb-0">{{request.user.get_full_name}}</h4>
+						</div>
+						<div class="profile-email px-2 pt-2">
+							<h4 class="text-muted mb-0">{{request.user.email}}</h4>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-xl-4">
+		<div class="row">
+			<div class="col-xl-12">
+				<div class="card">
+					<div class="card-body">
+						<div class="profile-blog">
+							<h5 class="text-primary d-inline">User Profile</h5>
+							<img src="{% static 'images/profile/profile.jpg' %}" alt="" class="img-fluid mt-4 mb-4 w-100">
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="col-xl-8">
+		<div class="card">
+			<div class="card-body">
+				<div class="profile-tab">
+					<div class="custom-tab-1">
+						<ul class="nav nav-tabs">
+							<li class="nav-item"><a href="#my-profile" data-bs-toggle="tab" class="nav-link active show">Profile</a>
+						</ul>
+						<div class="tab-content">
+							<div id="my-profile" class="tab-pane fade active show">
+								<div class="my-post-content pt-3">
+									<div class="basic-form">
+										<form  method="post" id="basicdataform" enctype="multipart/form-data" novalidate autocomplete="off">
+											{% csrf_token %}
+											<div class="row">
+												<div class="mb-3 col-md-6">
+														<div class="avatar-upload">
+															<div class="avatar-edit">
+																{{ form.avatar|attr:"type:file" }}
+																<label for="id_avatar"><i class="fas fa-pencil-alt"></i></label>
+															</div>
+															<div class="avatar-preview">
+																<div id="imagePreview" style="background-image: url('{{ form.instance.avatar.url }}');">
+																</div>
+															</div>
+													</div>
+													<div class="text-danger w-100 d-block mt-1">
+														{{ form.avatar.errors }}     
+													</div>
+												</div>
+												<div class="row col-md-6">
+													<div class="mb-3 col-md-6">
+														<label class="form-label">First Name<span class="text-danger">*</span></label>
+														{{form.first_name}}
+														<div class="text-danger w-100 d-block mt-1">
+														{{ form.first_name.errors }}
+														</div>
+													</div>
+													<div class="mb-3 col-md-6">
+														<label class="form-label">Last Name<span class="text-danger">*</span></label>
+														{{form.last_name}}
+														<div class="text-danger w-100 d-block mt-1">
+														{{ form.last_name.errors }}
+														</div>
+													</div>
+													<div class="mb-3 col-md-12">
+													<label class="form-label">Email</label>
+													{{form.email}}
+													<div class="text-danger w-100 d-block mt-1">
+													{{ form.email.errors }}
+													</div>
+													</div>
+						
+												</div>
+												<div class="row">
+													<div class="mb-6 col-md-6 custom-user">
+													<label class="form-label">Phone Number</label>
+														{{ form.phone_number }}
+														<div class="text-danger w-100 d-block mt-1">
+														{{ form.phone_number.errors }}
+														</div>
+													</div>
+													<div class="mb-6 col-md-6 custom-date-picker">
+														<label class="form-label">Date of Birth</label>
+														{{ form.dob}} 
+														<div class="text-danger w-100 d-block mt-1">
+														{{ form.dob.errors }}
+														</div>
+													</div>
+												</div>
+												<div class="mb-3 col-md-12 ">
+													<label class="form-label">About</label>
+													{{ form.about}}
+													<div class="text-danger w-100 d-block mt-1">
+													{{ form.about.errors }}
+													</div>
+												</div>
+											</div>
+											<button type="submit" class="btn btn-secondary mt-4 mb-5 ">Save</button>
+										</form>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+<!-- ================================
+    END CONTENT SECTION
+================================= -->
+

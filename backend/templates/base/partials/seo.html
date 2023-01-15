@@ -1,0 +1,6 @@
+{% load static %}
+<meta name="author" content="Bobby Stearman">
+<link rel="canonical" href="{{request.path}}"/>
+<link rel="home" href="{% url 'core:home' %}"/>
+<meta name="description" content="{% block description %}{% endblock %}">
+<meta name="keywords" content="{% block keywords %}{% endblock %}">

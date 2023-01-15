@@ -1,0 +1,94 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/0.9.15/css/jquery.Jcrop.min.css" integrity="sha512-bbAsdySYlqC/kxg7Id5vEUVWy3nOfYKzVHCKDFgiT+GsHG/3MD7ywtJnJNSgw++HBc+w4j71MLiaeVm1XY5KDQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="{% static 'js/vendor/jquery-3.5.1.min.js' %}"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/0.9.15/js/jquery.Jcrop.min.js" integrity="sha512-KKpgpD20ujD3yJ5gIJqfesYNuisuxguvTMcIrSnqGQP767QNHjEP+2s1WONIQ7j6zkdzGD4zgBHUwYmro5vMAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+	<style>
+		body {
+			width: 500px;
+			height: 380px;
+			font-family: Arial, Sans-serif;
+		}
+
+		.btnSubmitClass {
+			background-color: #696969;
+			padding: 5px 30px;
+			border: #696969 1px solid;
+			border-radius: 4px;
+			color: #FFFFFF;
+			margin-top: 10px;
+		}
+
+		input#cropBtnID {
+			padding: 5px 25px 5px 25px;
+			background: #D3D3D3;
+			border: #98b398 1px solid;
+			color: #FFF;
+			visibility: hidden;
+		}
+
+		#outputImage {
+			margin-top: 40px;
+		}
+	</style>
+</head>
+
+<body>
+	<h2>
+		How to crop image using
+		jQuery and PHP
+	</h2>
+
+	<div>
+		<img src="http://localhost:8000/media/gallery/main_netball_coach_wqL4DCi.png" id="cropImageID"
+				class="img" /><br />
+	</div>
+	<div id="btn">
+		<input type='button' id="cropBtnID"
+				value='Crop Image'>
+	</div>
+	<div>
+		<img src="#" id="outputImage"
+				style="display:none;">
+	</div>
+	<script type="text/javascript">
+		$(document).ready(function () {
+            
+			var size;
+			$('#cropImageID').Jcrop({
+
+				/* Some settings for
+				basic configuration*/
+				allowSelect: true,
+				allowMove: true,
+				allowResize: true,
+				fixedSupport: true,
+				aspectRatio: 1,
+				onSelect: function (c) {
+					size = { x: c.x, y: c.y,
+							w: c.w, h: c.h };
+
+					$("#cropBtnID").css(
+						"visibility", "visible");
+				}//end onSelect
+			});//end Jcrop method
+
+			$("#cropBtnID").click(function () {
+				var img = $("#cropImageID").attr('src');
+				$("#outputImage").show();
+				
+				$("#outputImage").attr('src',
+					'image-features.php?x = ' +
+					size.x + ' & y=' + size.y +
+					' & w=' + size.w + '&h=' +
+					size.h + '&img=' + img);
+			});
+		});//end document ready fn
+	</script>
+</body>
+
+</html>

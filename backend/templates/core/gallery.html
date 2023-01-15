@@ -1,0 +1,197 @@
+{% extends 'base/base.html' %}
+{% load static widget_tweaks %}
+
+<!-- ================================
+    START SEO BLOCKS
+================================= -->
+{% block title %}
+    AGI - {{page_name}}
+{% endblock %}
+
+{% block keywords %}
+{% endblock %}
+
+{% block description %}
+{% endblock %}
+
+{% block schema %}
+{% endblock %}
+<!-- ================================
+    END SEO BLOCKS AREA
+================================= -->
+
+<!-- ================================
+    START HEADER SECTION
+================================= -->
+{% block extend_header %}{% endblock %}
+<!-- ================================
+    END HEADER SECTION
+================================= -->
+
+<!-- ================================
+    START MODAL SECTION
+================================= -->
+{% block modal %}{% endblock %}
+<!-- ================================
+    END MODAL SECTION
+================================= -->
+
+<!-- ================================
+    START FOOTER SECTION
+================================= -->
+{% block extend_footer %}
+
+<script>
+
+$(document).ready(function(){
+	$('#select_multiple_btn').on('click', function () {
+		var id = [];
+	
+		$(':checkbox:checked').each(function(i){
+			id[i]=$(this).val();
+		});
+
+		if(id.length===0){
+			alert("Please select items to delete")
+		}
+		else{
+			$.ajax({
+				url:"/select-file/",
+				method:"POST",
+				dataType:'json',
+				data:{
+					id: id,
+					csrfmiddlewaretoken: $('input[name=csrfmiddlewaretoken]').val()
+				},
+				success:function(json){	
+					if (json["result"] == "Success"){
+						window.location.assign(json["redirect"])
+					}
+					else{
+						ShowAlert(json["result"], json["message"], json["result"].toLowerCase(), json["redirect"]);
+					}		
+				},
+				error:function(json){	
+					ShowAlert(json["result"], json["message"], json["result"].toLowerCase(), json["redirect"]);		
+				}
+			})
+		}
+	});
+});
+</script>
+
+
+{% endblock %}
+<!-- ================================
+    END FOOTER SECTION
+================================= -->
+
+<!-- ================================
+    START CONTENT SECTION
+================================= -->
+{% block content %}
+
+{% include 'base/partials/breadcrumb.html' %}
+   
+<div class="col-lg-12">
+	<div class="card">
+		<div class="card-header">
+			<h4 class="card-title">{{page_name}}</h4>
+			<div class="d-flex">
+				<button type="submit" id="select_multiple_btn" class="btn light btn-outline-primary btn-sm me-2 ">View Selection</button>
+			</div>
+		</div>
+		<div class="card-body">
+			<div class="table-responsive">
+				<table class="table table-responsive-md">
+					<thead>
+						<tr>
+							<th style="width:50px;">
+								<div class="form-check custom-checkbox checkbox-primary check-lg">
+									<input  type="checkbox" class="form-check-input" id="checkAll" value="">
+									<label class="form-check-label" for="checkAll"></label>
+								</div>
+							</th>
+							<th>Date</th>
+							<th>Type</th>
+							<th>File</th>
+							<th>Title</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% csrf_token %}
+						{% for object in object_list %}
+						<tr id="{{ object.id }}">
+							<td>
+								<div class="form-check custom-checkbox checkbox-primary check-lg me-3">
+									<input name="object_id[]" type="checkbox" class="form-check-input" value="{{ object.id }}">
+									<label class="form-check-label" for="checkbox-{{ object.id }}"></label>
+								</div>
+							</td>
+
+							<td>{{ object.created.date }}</td>
+							
+							<td>{{ object.type }}</td>
+							
+							<td>
+								<a href="{{object.get_absolute_url}}">
+									<div class="d-flex align-items-center">
+										<img src="{{object.file.url}}" class="rounded-lg me-2" width="24" alt=""> 
+										<span class="w-space-no">{{object.size}}</span>
+									</div>
+								</a>
+							</td>
+							
+							<td><strong>{{ object.title }}</strong></td>
+							
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+			<nav mt-5>
+				<p>
+					<span class="current">
+					Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
+					</span> 
+				</p>
+				<ul class="pagination pagination-gutter  justify-content-end">
+					<li class="page-item page-indicator ">
+						<a class="page-link" href="{% if object_list.has_previous %}
+													?page={{ object_list.previous_page_number }}
+													{% else %}
+													javascript:void(0);
+													{% endif %}">
+						<i class="la la-angle-left"></i></a>
+					</li>
+
+					{% for i in object_list.paginator.page_range|slice:":3" %}
+					<li class="page-item {% if object_list.number == i %}
+										active{% endif %}"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
+					{% endfor %}
+
+					{% if object_list.number > 3 %}
+					<li class="page-item active"><a class="page-link" href="?page={{ object_list.number }}">{{ object_list.number }}</a></li>
+					{% endif %}
+					
+					<li class="page-item page-indicator ">
+						<a class="page-link"  href="{% if object_list.has_next %}
+													?page={{ object_list.next_page_number }}
+													{% else %}
+													javascript:void(0);
+													{% endif %}">
+							<i class="la la-angle-right"></i></a>
+					</li>
+					<li>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+<!-- ================================
+    END CONTENT SECTION
+================================= -->

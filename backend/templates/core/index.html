@@ -1,0 +1,74 @@
+{% extends 'base/base.html' %}
+{% load static %}
+
+<!-- ================================
+    START SEO BLOCKS
+================================= -->
+{% block title %}
+    AGI - {{page_name}}
+{% endblock %}
+
+{% block keywords %}
+{% endblock %}
+
+{% block description %}
+{% endblock %}
+
+{% block schema %}
+{% endblock %}
+<!-- ================================
+    END SEO BLOCKS AREA
+================================= -->
+
+<!-- ================================
+    START HEADER SECTION
+================================= -->
+{% block extend_header %}{% endblock %}
+<!-- ================================
+    END HEADER SECTION
+================================= -->
+
+<!-- ================================
+    START MODAL SECTION
+================================= -->
+{% block modal %}{% endblock %}
+<!-- ================================
+    END MODAL SECTION
+================================= -->
+
+<!-- ================================
+    START FOOTER SECTION
+================================= -->
+{% block extend_footer %}{% endblock %}
+<!-- ================================
+    END FOOTER SECTION
+================================= -->
+
+<!-- ================================
+    START CONTENT SECTION
+================================= -->
+{% block content %}
+
+<div class="authincation h-100">
+	<div class="container h-100">
+		<div class="row justify-content-center h-100 align-items-center">
+			<div class="col-md-5">
+				<div class="form-input-content text-center error-page">
+					<h1 class="error-text font-weight-bold">AGI</h1>
+					<h4><i class="fa fa-thumbs-up text-success"></i>Welcome</h4>
+					<p>Tech exercise - Bobby Stearman</p>
+					<div>
+						<a class="btn btn-primary" href="{% url 'users:login' %}">Sign In</a>
+						<a class="btn btn-secondary" href="{% url 'users:signup' %}">Sign Up</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+<!-- ================================
+    END CONTENT SECTION
+================================= -->

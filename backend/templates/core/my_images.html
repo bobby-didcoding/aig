@@ -1,0 +1,173 @@
+{% extends 'base/base.html' %}
+{% load static widget_tweaks %}
+
+<!-- ================================
+    START SEO BLOCKS
+================================= -->
+{% block title %}
+    AGI - {{page_name}}
+{% endblock %}
+
+{% block keywords %}
+{% endblock %}
+
+{% block description %}
+{% endblock %}
+
+{% block schema %}
+{% endblock %}
+<!-- ================================
+    END SEO BLOCKS AREA
+================================= -->
+
+<!-- ================================
+    START HEADER SECTION
+================================= -->
+{% block extend_header %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/0.9.15/css/jquery.Jcrop.min.css" integrity="sha512-bbAsdySYlqC/kxg7Id5vEUVWy3nOfYKzVHCKDFgiT+GsHG/3MD7ywtJnJNSgw++HBc+w4j71MLiaeVm1XY5KDQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% endblock %}
+<!-- ================================
+    END HEADER SECTION
+================================= -->
+
+<!-- ================================
+    START MODAL SECTION
+================================= -->
+{% block modal %}{% endblock %}
+<!-- ================================
+    END MODAL SECTION
+================================= -->
+
+<!-- ================================
+    START FOOTER SECTION
+================================= -->
+{% block jcrop %}{% endblock %}
+{% block extend_footer %}
+<script src="https://unpkg.com/jcrop"></script>
+{% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/0.9.15/js/jquery.Jcrop.min.js" integrity="sha512-KKpgpD20ujD3yJ5gIJqfesYNuisuxguvTMcIrSnqGQP767QNHjEP+2s1WONIQ7j6zkdzGD4zgBHUwYmro5vMAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> {% endcomment %}
+<script>
+
+$(window).on('load', function () {
+
+	//const stage = Jcrop.attach('target',{
+	//	/* Some settings for 
+	//	basic configuration*/
+	//	allowSelect: true,
+	//	allowMove: true,
+	//	allowResize: true,
+	//	fixedSupport: true,
+	//	aspectRatio: 1,
+	//	aspectRatio: 1,
+	//	onSelect: function (c) {
+	//		size = { x: c.x, y: c.y, 
+	//				w: c.w, h: c.h };
+//
+////			$("#cropBtnID").css(
+	//			"visibility", "visible");
+	//	}//end onSelect
+	//});
+	const stage = $('#image-1').Jcrop({
+		/* Some settings for 
+		basic configuration*/
+		allowSelect: true,
+		allowMove: true,
+		allowResize: true,
+		fixedSupport: true,
+		aspectRatio: 1,
+		onSelect: function (c) {
+			size = { x: c.x, y: c.y, 
+					w: c.w, h: c.h };
+
+			$("#cropBtnID").css(
+				"visibility", "visible");
+		}//end onSelect
+	});//end Jcrop method
+
+	$("#cropBtnID").click(function () {
+		var img = $("#image-1").attr('src');
+		$("#outputImage").show();
+			
+		$("#outputImage").attr('src', 
+			'image-features.php?x = ' +
+			size.x + ' & y=' + size.y +
+			' & w=' + size.w + '&h=' + 
+			size.h + '&img=' + img);
+	});
+	
+})
+</script>
+
+
+{% endblock %}
+<!-- ================================
+    END FOOTER SECTION
+================================= -->
+
+<!-- ================================
+    START CONTENT SECTION
+================================= -->
+{% block content %}
+
+{% include 'base/partials/breadcrumb.html' %}
+<div class="row">
+	<div class="col-xl-12">
+		<div class="card">
+			<div class="card-body">
+				<div class="profile-tab">
+					<div class="custom-tab-1">
+						<ul class="nav nav-tabs">
+							{% for object in object_list %}
+							<li class="nav-item"><a href="#gallery-{{forloop.counter}}" data-bs-toggle="tab" class="nav-link{% if forloop.counter == 1 %} active show{% endif %}">{{object.title}} {{forloop.counter}}</a>
+							{% endfor %}
+						</ul>
+						<div class="tab-content">
+							{% for object in object_list %}
+							<div id="gallery-{{forloop.counter}}" class="tab-pane fade{% if forloop.counter == 1 %} active show{% endif %}">
+								<div class="row">
+									<div class="col-xl-8">
+										<div class="jcrop-ux-fade-more jcrop-ux-keep-current">
+											<img src="{{object.file.url}}" class="img-fluid mt-4 mb-4" id="image-{{forloop.counter}}">
+										</div>
+									</div>
+									<div class="col-xl-4">
+										<div class="basic-form">
+											<form  method="post" id="coordinateform{{forloop.counter}}" action="/submit-coordinates/{{object.id}}/">
+												{% csrf_token %}
+												<div class="row">
+													<div class="mb-3 col-md-12 ">
+														<label class="form-label">X Coordinate</label>
+														<input type="text" name="x_{{forloop.counter}}" value="{{forloop.counter}}" class="form-control" maxlength="30" readonly id="x-{{forloop.counter}}">
+													</div>
+													<div class="mb-3 col-md-12 ">
+														<label class="form-label">Y Coordinate</label>
+														<input type="text" name="y_{{forloop.counter}}" value="{{forloop.counter}}" class="form-control" maxlength="30" readonly id="y-{{forloop.counter}}">
+													</div>
+													<div class="mb-3 col-md-12 ">
+														<label class="form-label">X2 Coordinates</label>
+														<input type="text" name="x2_{{forloop.counter}}" value="{{forloop.counter}}" class="form-control" maxlength="30" readonly id="x2-{{forloop.counter}}">
+													</div>
+													<div class="mb-3 col-md-12 ">
+														<label class="form-label">Y2 Coordinates</label>
+														<input type="text" name="y2_{{forloop.counter}}" value="{{forloop.counter}}" class="form-control" maxlength="30" readonly id="y2-{{forloop.counter}}">
+													</div>
+												</div>
+												<button type="submit" value="{{forloop.counter}}" class="btn btn-secondary mt-4 mb-5 submit-coordinates">Save selection</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+
+<!-- ================================
+    END CONTENT SECTION
+================================= -->

@@ -1,0 +1,24 @@
+{% load static %}
+
+<div class="deznav">
+    <div class="deznav-scroll">
+        <ul class="metismenu" id="menu">
+            <li><a class="has-arrow ai-icon" href="javascript:void()" aria-expanded="true">
+                    <i class="flaticon-dashboard-1"></i>
+                    <span class="nav-text">Nav</span>
+                </a>
+                <ul aria-expanded="true">
+                    <li><a href="{% url 'core:home' %}">Home</a></li>
+                    <li><a href="{% url 'users:signup' %}">Sign up</a></li>
+                    <li><a href="{% url 'users:login' %}">Sign in</a></li>
+                    <li><a href="{% url 'users:dashboard' %}">Dashboard</a></li>
+                    <li><a href="{% url 'core:gallery' %}">Gallery</a></li>
+                    <li><a href="{% url 'core:my-images' %}">My images</a></li>
+                    <li><a href="{% url 'core:my-coordinates' %}">My coordinates</a></li>
+                    <li><a href="{% url 'users:logout' %}">Sign out</a></li>
+                </ul>
+            </li>
+            
+        </ul>
+    </div>
+</div>

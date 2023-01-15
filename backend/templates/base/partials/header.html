@@ -1,0 +1,26 @@
+{% load static custom_tag_page_title %}
+<div class="header">
+    <div class="header-content">
+        <nav class="navbar navbar-expand">
+            <div class="collapse navbar-collapse justify-content-between">
+                <div class="header-left">
+                    <div class="dashboard_bar">
+                        {{ request.path|get_page_title  }}
+                    </div>
+                </div>
+
+                <ul class="navbar-nav header-right">
+                    <li class="nav-item dropdown header-profile">
+                        <a class="nav-link" href="#" role="button" data-bs-toggle="dropdown">
+                            <div class="header-info">
+                                {% if request.user.is_authenticated %}
+                                <span class="text-black">Hello, <strong>{{ request.user.first_name }} {{ request.user.last_name }}</strong></span>
+                                {% endif %}
+                            </div>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+</div>
