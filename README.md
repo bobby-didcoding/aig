@@ -63,3 +63,10 @@ python manage.py makemigrations
 python manage.py migrate
 python manage.py runserver
 ```
+
+***
+***
+
+## Lastly, create a mediafiles dir
+
+The easiest way to do this is to simply copy the media dir and name it 'mediafiles'.
