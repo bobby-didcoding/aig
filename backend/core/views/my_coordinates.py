@@ -26,7 +26,7 @@ class MyCoordinatesView(generic.ListView):
     paginate_by: int = 10
 
     def get_queryset(self):
-        qs = self.model.objects.active()
+        qs = self.model.objects.active().filter(user = self.request.user)
         return qs
 
     def get_context_data(self, **kwargs):

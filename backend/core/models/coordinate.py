@@ -77,6 +77,9 @@ class Coordinate(TimeStampedModel, ActivatorModel, TitleDescriptionModel,  Model
             "y2": self.y2,
         }
 
+        if self.title:
+            coordinate_dict["title"] = self.title
+
         blank_filename = f'{settings.MEDIA_ROOT}/users/coordinates/blank.json'
         new_filename = f'{self.create_file_name()}.json'
 

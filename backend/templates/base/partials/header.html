@@ -1,11 +1,11 @@
-{% load static custom_tag_page_title %}
+{% load static %}
 <div class="header">
     <div class="header-content">
         <nav class="navbar navbar-expand">
             <div class="collapse navbar-collapse justify-content-between">
                 <div class="header-left">
                     <div class="dashboard_bar">
-                        {{ request.path|get_page_title  }}
+                        {{ page_name }}
                     </div>
                 </div>
 

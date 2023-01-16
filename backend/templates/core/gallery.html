@@ -149,43 +149,7 @@ $(document).ready(function(){
 					</tbody>
 				</table>
 			</div>
-			<nav mt-5>
-				<p>
-					<span class="current">
-					Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}.
-					</span> 
-				</p>
-				<ul class="pagination pagination-gutter  justify-content-end">
-					<li class="page-item page-indicator ">
-						<a class="page-link" href="{% if object_list.has_previous %}
-													?page={{ object_list.previous_page_number }}
-													{% else %}
-													javascript:void(0);
-													{% endif %}">
-						<i class="la la-angle-left"></i></a>
-					</li>
-
-					{% for i in object_list.paginator.page_range|slice:":3" %}
-					<li class="page-item {% if object_list.number == i %}
-										active{% endif %}"><a class="page-link" href="?page={{i}}">{{i}}</a></li>
-					{% endfor %}
-
-					{% if object_list.number > 3 %}
-					<li class="page-item active"><a class="page-link" href="?page={{ object_list.number }}">{{ object_list.number }}</a></li>
-					{% endif %}
-					
-					<li class="page-item page-indicator ">
-						<a class="page-link"  href="{% if object_list.has_next %}
-													?page={{ object_list.next_page_number }}
-													{% else %}
-													javascript:void(0);
-													{% endif %}">
-							<i class="la la-angle-right"></i></a>
-					</li>
-					<li>
-					</li>
-				</ul>
-			</nav>
+			{% include 'base/partials/pagination.html' %}
 		</div>
 	</div>
 </div>
