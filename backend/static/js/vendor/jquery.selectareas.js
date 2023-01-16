@@ -13,6 +13,7 @@
             $selection,
             $resizeHandlers = {},
             $btDelete,
+            $nameArea,
             resizeHorizontally = true,
             resizeVertically = true,
             selectionOffset = [0, 0],
@@ -23,7 +24,8 @@
                 y: 0,
                 z: 0,
                 height: 0,
-                width: 0
+                width: 0,
+                name: "",
             },
             blur = function () {
                 area.z = 0;
@@ -154,6 +156,16 @@
                     });
                 }
             },
+            updateName = function (visible) {
+                if ($nameArea) {
+                    $nameArea.css({
+                        display: visible ? "block" : "none",
+                        left: area.x + area.width + 1,
+                        top: area.y - $nameArea.outerHeight() - 1,
+                        "z-index": area.z + 1
+                    });
+                }
+            },
             updateCursor = function (cursorType) {
                 $outline.css({
                     cursor: cursorType
@@ -170,6 +182,7 @@
                         updateSelection();
                         updateResizeHandlers();
                         updateBtDelete(true);
+                        updateName(true);
                         break;
 
                     case "pickSelection":
@@ -182,6 +195,7 @@
                         updateResizeHandlers();
                         updateCursor("crosshair");
                         updateBtDelete(true);
+                        updateName(true);
                         break;
 
                     case "moveSelection":
@@ -189,12 +203,14 @@
                         updateResizeHandlers();
                         updateCursor("move");
                         updateBtDelete(true);
+                        updateName(true);
                         break;
 
                     case "blur":
                         updateSelection();
                         updateResizeHandlers();
                         updateBtDelete();
+                        updateName();
                         break;
 
                     //case "releaseSelection":
@@ -202,6 +218,7 @@
                         updateSelection();
                         updateResizeHandlers(true);
                         updateBtDelete(true);
+                        updateName(true);
                 }
             },
             startSelection  = function (event) {
@@ -425,6 +442,7 @@
                     $handler.remove();
                 });
                 $btDelete.remove();
+                $nameArea.remove();
                 parent._remove(id);
                 fireEvent("changed");
             },
@@ -504,6 +522,16 @@
                 .insertAfter($selection);
         }
 
+        // initialize name area
+        if (options.allowNameArea) {
+            var bindToNameArea = function ($obj) {
+                return $obj;
+            };
+            $nameArea = bindToNameArea($("<div class=\"name-area\" />"))
+                .append(bindToNameArea($("<input type=\"text\" class=\"select-areas-name-area\" />")))
+                .insertAfter($selection);
+        }
+
         if (options.allowMove) {
             $selection.mousedown(pickSelection).bind("touchstart", pickSelection);
         }
@@ -561,6 +589,7 @@
                 allowResize: true,
                 allowSelect: true,
                 allowDelete: true,
+                allowNameArea: true,
                 allowNudge: true,
                 aspectRatio: 0,
                 minSize: [0, 0],
@@ -577,7 +606,7 @@
         this.options = $.extend(defaultOptions, customOptions);
 
         if (! this.options.allowEdit) {
-            this.options.allowSelect = this.options.allowMove = this.options.allowResize = this.options.allowDelete = false;
+            this.options.allowSelect = this.options.allowMove = this.options.allowResize = this.options.allowDelete = this.options.allowNameArea = false;
         }
 
         this._areas = {};
@@ -752,7 +781,7 @@
             this._add(options);
         }
         this._refresh();
-        if (! this.options.allowSelect && ! this.options.allowMove && ! this.options.allowResize && ! this.options.allowDelete) {
+        if (! this.options.allowSelect && ! this.options.allowMove && ! this.options.allowResize && ! this.options.allowDelete && ! this.options.allowNameArea) {
             this.blurAll();
         }
     };

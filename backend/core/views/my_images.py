@@ -23,7 +23,7 @@ class MyImagesView(generic.ListView):
     :template:`core/my_images.html`
     """
     model = Gallery
-    template_name = "core/my_images2.html"
+    template_name = "core/my_images.html"
     paginate_by: int = 4
 
     def get_queryset(self):

@@ -101,6 +101,7 @@ $(document).ready(function(){
 							</th> {% endcomment %}
 							<th>Date</th>
 							<th>Images</th>
+							<th>Title</th>
 							<th>X</th>
 							<th>Y</th>
 							<th>X2</th>
@@ -129,7 +130,7 @@ $(document).ready(function(){
 									</div>
 								{% comment %} </a> {% endcomment %}
 							</td>
-							
+							<td><strong>{{ object.title }}</strong></td>
 							<td><strong>{{ object.x }}</strong></td>
 							<td><strong>{{ object.y }}</strong></td>
 							<td><strong>{{ object.x2 }}</strong></td>

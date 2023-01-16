@@ -24,7 +24,7 @@
     START HEADER SECTION
 ================================= -->
 {% block extend_header %}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/0.9.15/css/jquery.Jcrop.min.css" integrity="sha512-bbAsdySYlqC/kxg7Id5vEUVWy3nOfYKzVHCKDFgiT+GsHG/3MD7ywtJnJNSgw++HBc+w4j71MLiaeVm1XY5KDQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+<link rel="stylesheet" href="{% static 'css/vendor/jquery.selectareas.css' %}" />
 {% endblock %}
 <!-- ================================
     END HEADER SECTION
@@ -43,60 +43,128 @@
 ================================= -->
 {% block jcrop %}{% endblock %}
 {% block extend_footer %}
-<script src="https://unpkg.com/jcrop"></script>
-{% comment %} <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-jcrop/0.9.15/js/jquery.Jcrop.min.js" integrity="sha512-KKpgpD20ujD3yJ5gIJqfesYNuisuxguvTMcIrSnqGQP767QNHjEP+2s1WONIQ7j6zkdzGD4zgBHUwYmro5vMAw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script> {% endcomment %}
-<script>
+{% comment %} <script src="https://unpkg.com/jcrop"></script> {% endcomment %}
+<script src="{% static 'js/vendor/jquery.selectareas.js' %}"></script>
+<script type="text/javascript">
+	$(document).ready(function () {
+		$('img#image-1').selectAreas({
+			minSize: [10, 10],
+			onChanged: debugQtyAreas,
+			width: 800,
+			areas: [
+			]
+		});
+		$('#btnView').click(function () {
+			var areas = $('img#image-1').selectAreas('areas');
+			displayAreas(areas);
+		});
+		$('#btnViewRel').click(function () {
+			var areas = $('img#image-1').selectAreas('relativeAreas');
+			displayAreas(areas);
+		});
+		$('#btnReset').click(function () {
+			output("reset")
+			$('img#image-1').selectAreas('reset');
+		});
+		$('#btnDestroy').click(function () {
+			$('img#image-1').selectAreas('destroy');
 
-$(window).on('load', function () {
+			output("destroyed")
+			$('.actionOn').attr("disabled", "disabled");
+			$('.actionOff').removeAttr("disabled")
+		});
+		$('#btnCreate').attr("disabled", "disabled").click(function () {
+			$('img#image-1').selectAreas({
+				minSize: [10, 10],
+				onChanged : debugQtyAreas,
+				width: 500,
+			});
 
-	//const stage = Jcrop.attach('target',{
-	//	/* Some settings for 
-	//	basic configuration*/
-	//	allowSelect: true,
-	//	allowMove: true,
-	//	allowResize: true,
-	//	fixedSupport: true,
-	//	aspectRatio: 1,
-	//	aspectRatio: 1,
-	//	onSelect: function (c) {
-	//		size = { x: c.x, y: c.y, 
-	//				w: c.w, h: c.h };
-//
-////			$("#cropBtnID").css(
-	//			"visibility", "visible");
-	//	}//end onSelect
-	//});
-	const stage = $('#image-1').Jcrop({
-		/* Some settings for 
-		basic configuration*/
-		allowSelect: true,
-		allowMove: true,
-		allowResize: true,
-		fixedSupport: true,
-		aspectRatio: 1,
-		onSelect: function (c) {
-			size = { x: c.x, y: c.y, 
-					w: c.w, h: c.h };
-
-			$("#cropBtnID").css(
-				"visibility", "visible");
-		}//end onSelect
-	});//end Jcrop method
-
-	$("#cropBtnID").click(function () {
-		var img = $("#image-1").attr('src');
-		$("#outputImage").show();
-			
-		$("#outputImage").attr('src', 
-			'image-features.php?x = ' +
-			size.x + ' & y=' + size.y +
-			' & w=' + size.w + '&h=' + 
-			size.h + '&img=' + img);
+			output("created")
+			$('.actionOff').attr("disabled", "disabled");
+			$('.actionOn').removeAttr("disabled")
+		});
+		$('#btnNew').click(function () {
+			var areaOptions = {
+				x: Math.floor((Math.random() * 200)),
+				y: Math.floor((Math.random() * 200)),
+				width: Math.floor((Math.random() * 100)) + 50,
+				height: Math.floor((Math.random() * 100)) + 20,
+			};
+			output("Add a new area: " + areaToString(areaOptions))
+			$('img#image-1').selectAreas('add', areaOptions);
+		});
+		$('#btnNews').click(function () {
+			var areaOption1 = {
+				x: Math.floor((Math.random() * 200)),
+				y: Math.floor((Math.random() * 200)),
+				width: Math.floor((Math.random() * 100)) + 50,
+				height: Math.floor((Math.random() * 100)) + 20,
+			}, areaOption2 = {
+				x: areaOption1.x + areaOption1.width + 10,
+				y: areaOption1.y + areaOption1.height - 20,
+				width: 50,
+				height: 20,
+			};
+			output("Add a new area: " + areaToString(areaOption1) + " and " + areaToString(areaOption2))
+			$('img#image-1').selectAreas('add', [areaOption1, areaOption2]);
+		});
 	});
-	
-})
-</script>
 
+	var selectionExists;
+
+	function areaToString (area) {
+		return (typeof area.id === "undefined" ? "" : (area.id + ": ")) + area.x + ':' + area.y  + ' ' + area.width + 'x' + area.height + '<br />'
+	}
+
+	function areaToStringForBackend (area) {
+		return (typeof area.id === "undefined" ? "" : (area.id + ":")) + area.x + '-' + area.y  + '-' + area.width + '-' + area.height + '<br />'
+	}
+
+	function areaToStringForBackendForForm (area, name) {
+		return 'x:' + area.x + ',y:' + area.y  + ',x2:' +area.width + ',y2:' + area.height+ ',title:' + name
+	}
+
+	function output (text) {
+		$('#output').html(text);
+	}
+
+	// Log the quantity of selections
+	function debugQtyAreas (event, id, areas) {
+		console.log(areas.length + " areas", arguments);
+	};
+
+	
+
+	// Display areas coordinates in a div
+	function displayAreas (areas) {
+		var text = "";
+		var form_el = $('#image-coordinates-row')
+		form_el.empty()
+
+
+		//get all areas
+		var names = []
+		var all_area_elements = document.getElementsByClassName("select-areas-background-area");
+		for (var i = 0; i < all_area_elements.length; i++){
+			names.push(all_area_elements[i].nextSibling.firstChild.value);
+		}
+
+		var reversedNames = names.reverse()
+	
+		$.each(areas, function (id, area) {
+			var name = reversedNames[id];
+			var new_div = '<div class="mb-3 col-md-12 ">' +
+				'<label class="form-label">Box id: '+(id+1).toString()+'</label>'+
+				'<input type="text" name="coordinate_'+(id+1).toString()+'" value="'+areaToStringForBackendForForm(area, name)+'" class="form-control" maxlength="30" readonly id="x-'+(id+1).toString()+'">'+
+			'</div>'
+			text += areaToStringForBackend(area);
+			form_el.append(new_div)
+		});
+		output(text);
+	};
+
+</script><link href="http://www.jqueryscript.net/css/jquerysctipttop.css" rel="stylesheet" type="text/css">
 
 {% endblock %}
 <!-- ================================
@@ -124,34 +192,31 @@ $(window).on('load', function () {
 							{% for object in object_list %}
 							<div id="gallery-{{forloop.counter}}" class="tab-pane fade{% if forloop.counter == 1 %} active show{% endif %}">
 								<div class="row">
-									<div class="col-xl-8">
-										<div class="jcrop-ux-fade-more jcrop-ux-keep-current">
-											<img src="{{object.file.url}}" class="img-fluid mt-4 mb-4" id="image-{{forloop.counter}}">
+									<div class="col-xl-12">
+										{% if forloop.counter == 1 %}
+										<div class="image-decorator">
+											<img src="{{object.file.url}}"  id="image-{{forloop.counter}}">
 										</div>
+										{% else %}
+										<div class="jcrop-ux-fade-more">
+											<img src="{{object.file.url}}" class="img-fluid mt-4 mb-4 w-100" id="image-{{forloop.counter}}" style="z-index: 0">
+										</div>
+										{% endif %}
 									</div>
-									<div class="col-xl-4">
+								</div>
+								<div class="row">
+									<div class="col-xl-6">
+										
+										<div id="output" class='output' style="display:none"> </div>
+										<input type="button" id="btnView" value="Display areas" class="actionOn btn btn-secondary mt-4 mb-5" />
+									</div>
+									<div class="col-xl-6">
 										<div class="basic-form">
 											<form  method="post" id="coordinateform{{forloop.counter}}" action="/submit-coordinates/{{object.id}}/">
 												{% csrf_token %}
-												<div class="row">
-													<div class="mb-3 col-md-12 ">
-														<label class="form-label">X Coordinate</label>
-														<input type="text" name="x_{{forloop.counter}}" value="{{forloop.counter}}" class="form-control" maxlength="30" readonly id="x-{{forloop.counter}}">
-													</div>
-													<div class="mb-3 col-md-12 ">
-														<label class="form-label">Y Coordinate</label>
-														<input type="text" name="y_{{forloop.counter}}" value="{{forloop.counter}}" class="form-control" maxlength="30" readonly id="y-{{forloop.counter}}">
-													</div>
-													<div class="mb-3 col-md-12 ">
-														<label class="form-label">X2 Coordinates</label>
-														<input type="text" name="x2_{{forloop.counter}}" value="{{forloop.counter}}" class="form-control" maxlength="30" readonly id="x2-{{forloop.counter}}">
-													</div>
-													<div class="mb-3 col-md-12 ">
-														<label class="form-label">Y2 Coordinates</label>
-														<input type="text" name="y2_{{forloop.counter}}" value="{{forloop.counter}}" class="form-control" maxlength="30" readonly id="y2-{{forloop.counter}}">
-													</div>
+												<div class="row" id="image-coordinates-row">
 												</div>
-												<button type="submit" value="{{forloop.counter}}" class="btn btn-secondary mt-4 mb-5 submit-coordinates">Save selection</button>
+												<button type="submit" id="coordinateformbtn{{forloop.counter}}" class="btn btn-secondary mt-4 mb-5 submit-coordinates">Save selections</button>
 											</form>
 										</div>
 									</div>

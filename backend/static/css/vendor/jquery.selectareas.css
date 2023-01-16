@@ -33,6 +33,12 @@
 .delete-area {
 	position: absolute;
 	cursor: pointer;
+	padding: -40px;
+}
+
+.name-area {
+	position: absolute;
+	cursor: pointer;
 	padding: 5px;
 }
 

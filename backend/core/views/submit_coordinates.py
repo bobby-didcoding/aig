@@ -31,7 +31,7 @@ def submit_coordinates(request, id):
         
         #Used to work through all coordinates sent via ajax
         post = request.POST.dict()
-        post.pop('csrfmiddlewaretoken')
+        post.pop('csrfmiddlewaretoken')        
         for key, value in post.items():
             coordinate_kwargs = {
                 'user': user,
